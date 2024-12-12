@@ -24,7 +24,7 @@ Diese Ressourcen werden automatisch über Git in die Server-Struktur geklont.
    Lade das Skript auf deinen Server herunter oder clone dieses Repo.
    ```bash
    git clone https://github.com/sledgehamm3r/FiveM-Server-in-Docker-Compose.git
-   cd FiveM-Server-in-Docker-Compose`` 
+   cd FiveM-Server-in-Docker-Compose 
 
 2.  **Ausführbar machen (falls nötig)**:
     
