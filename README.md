@@ -1,4 +1,4 @@
-# QBCore Setup Skript
+# QBCore Setup Skript für Harry
 
 Dieses Skript ermöglicht eine einfache Einrichtung eines QBCore-basierten FiveM-Servers unter Debian/Ubuntu. 
 Es prüft und installiert (falls gewünscht) Docker und Docker Compose, erstellt ein entsprechendes Docker-Image und startet anschließend den FiveM-Server mit QBCore-Framework und ausgewählten Ressourcen (z. B. `qb-core`, `qb-ambulancejob`, `qb-policejob`).
