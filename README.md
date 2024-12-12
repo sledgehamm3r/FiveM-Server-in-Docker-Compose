@@ -29,11 +29,11 @@ Diese Ressourcen werden automatisch über Git in die Server-Struktur geklont.
 2.  **Ausführbar machen (falls nötig)**:
     
   
-    `chmod +x setup.sh` 
+    `chmod +x install.sh` 
     
 3.  **Skript ausführen**:
     
-    `./setup.sh` 
+    `./install.sh` 
     
 4.  **Abfrage nach Docker/Docker Compose Installation**:  
     Falls Docker oder Docker Compose nicht installiert sind, wirst du gefragt, ob diese installiert werden sollen. Antworte mit `y`, um die Installation automatisch durchzuführen.
