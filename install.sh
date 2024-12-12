@@ -6,7 +6,6 @@ print_header() {
     echo -e "\e[1;34m=========================================\e[0m"
     echo -e "\e[1;34m  Copyright 2024 © sledgehamm3r\e[0m"
     echo -e "\e[1;34m=========================================\e[0m\n"
-    echo -e "\e[1;34m               Für Harry\e[0m"
 }
 
 print_header
@@ -26,6 +25,7 @@ if [ "$DOCKER_INSTALLED" = false ] || [ "$COMPOSE_INSTALLED" = false ]; then
     read -p "Docker und Docker Compose wurden nicht gefunden oder sind unvollständig installiert. Möchten Sie beides installieren? (y/n): " INSTALL_DOCKER
     print_header
     if [ "$INSTALL_DOCKER" = "y" ] || [ "$INSTALL_DOCKER" = "Y" ]; then
+        # Docker installieren
         apt-get update
         apt-get install -y ca-certificates curl gnupg lsb-release
         mkdir -p /etc/apt/keyrings
@@ -38,12 +38,14 @@ if [ "$DOCKER_INSTALLED" = false ] || [ "$COMPOSE_INSTALLED" = false ]; then
         apt-get update
         apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
         
+        # Prüfen ob jetzt docker verfügbar ist
         if ! command -v docker &> /dev/null; then
             print_header
             echo "Fehler bei der Installation von Docker."
             exit 1
         fi
         
+        # Prüfen ob jetzt docker compose verfügbar ist
         if ! command -v docker compose &> /dev/null; then
             print_header
             echo "Fehler bei der Installation von Docker Compose."
@@ -67,7 +69,8 @@ if [ "$DOCKER_INSTALLED" = false ] || [ "$COMPOSE_INSTALLED" = false ]; then
 fi
 
 print_header
-read -p "Bitte gib die IP-Adresse deines Server ein: " SERVER_IP
+# Abfrage der IP-Adresse
+read -p "Bitte geben Sie die IP-Adresse für den Server ein: " SERVER_IP
 print_header
 if [ -z "$SERVER_IP" ]; then
     echo "Keine IP-Adresse eingegeben, Skript wird abgebrochen."
@@ -75,7 +78,8 @@ if [ -z "$SERVER_IP" ]; then
 fi
 
 print_header
-read -p "Bitte gib den FiveM License Key ein: " LICENSE_KEY
+# Abfrage des Lizenzkeys
+read -p "Bitte geben Sie Ihren FiveM License Key ein: " LICENSE_KEY
 print_header
 if [ -z "$LICENSE_KEY" ]; then
     echo "Kein License Key eingegeben, Skript wird abgebrochen."
@@ -83,17 +87,21 @@ if [ -z "$LICENSE_KEY" ]; then
 fi
 
 print_header
+# Arbeitsverzeichnis anlegen
 mkdir -p qbcore-docker
 cd qbcore-docker
 
+# Dockerfile erstellen
 cat > Dockerfile <<EOF
 FROM debian:stable-slim
 
+# Systemupdates & notwendige Pakete für den FiveM Server
 RUN apt-get update && \
     apt-get install -y wget xz-utils libatomic1 screen git ca-certificates && \
     update-ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
+# FiveM Server installieren (feste Version verwenden)
 ENV FX_VERSION=7290-a654bcc2adfa27c4e020fc915a1a6343c3b4f921
 RUN mkdir -p /fivem && \
     cd /fivem && \
@@ -101,24 +109,30 @@ RUN mkdir -p /fivem && \
     tar xf fx.tar.xz && \
     rm fx.tar.xz
 
+# QBCore herunterladen
 RUN mkdir -p /fivem/server-data/resources/[qb] && \
     cd /fivem/server-data/resources/[qb] && \
     git clone https://github.com/qbcore-framework/qb-core.git && \
     git clone https://github.com/qbcore-framework/qb-ambulancejob.git && \
     git clone https://github.com/qbcore-framework/qb-policejob.git
 
+# Lokale server.cfg einspielen
 COPY server.cfg /fivem/server-data/server.cfg
 
+# Arbeitsverzeichnis
 WORKDIR /fivem
 
+# Ports
 EXPOSE 30120/udp
 EXPOSE 30120/tcp
 
+# Server-Startbefehl
 CMD ["bash", "-c", "./run.sh +exec server-data/server.cfg"]
 EOF
 
+# server.cfg erstellen, IP und LicenseKey einfügen
 cat > server.cfg <<EOF
-sv_hostname "Harry's QBCore Server"
+sv_hostname "Mein QBCore Server"
 sv_maxclients 32
 
 endpoint_add_tcp "${SERVER_IP}:30120"
@@ -133,6 +147,7 @@ sv_licenseKey "${LICENSE_KEY}"
 rcon_password "geheim"
 EOF
 
+# docker-compose.yml erstellen
 cat > docker-compose.yml <<EOF
 version: '3.9'
 services:
